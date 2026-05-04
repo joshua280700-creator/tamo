@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flores para ti 🌻🤍</title>
+    <title>Para mi Amor 🌻🤍</title>
     <style>
         body {
             margin: 0;
             padding: 0;
+            /* Fondo cremita muy suave para que resalten los colores */
             background-color: #fdfaf3; 
             font-family: 'Courier New', Courier, monospace;
             display: flex;
@@ -20,11 +21,11 @@
 
         #canvas-container {
             width: 100%;
-            height: 60vh;
+            height: 65vh; /* Un poco más alto para el árbol frondoso */
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            margin-top: 2vh;
+            margin-top: 1vh;
         }
 
         canvas {
@@ -34,31 +35,31 @@
         #text-container {
             width: 85%;
             max-width: 650px;
-            margin-top: 15px;
+            margin-top: 10px;
             text-align: left;
-            min-height: 140px;
+            min-height: 120px;
         }
 
         .line {
-            margin-bottom: 8px;
-            font-size: 1.05rem;
-            line-height: 1.4;
+            margin-bottom: 6px;
+            font-size: 1rem;
+            line-height: 1.3;
         }
 
         #timer-container {
-            margin-top: 15px;
+            margin-top: 10px;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             text-align: center;
             border-top: 1px solid #e0e0e0;
-            padding-top: 15px;
+            padding-top: 12px;
             width: 85%;
             max-width: 650px;
-            padding-bottom: 20px;
+            padding-bottom: 15px;
         }
         
         #timer {
-            color: #d2a679; 
+            color: #b08a68; /* Marrón suave para el cronómetro */
         }
     </style>
 </head>
@@ -71,12 +72,13 @@
     <div id="text-container"></div>
 
     <div id="timer-container">
-        <div style="font-size: 0.85rem; font-weight: normal; margin-bottom: 5px; color: #777;">Mi amor por ti comenzó hace...</div>
+        <div style="font-size: 0.8rem; font-weight: normal; margin-bottom: 4px; color: #777;">Mi amor por ti comenzó hace...</div>
         <span id="timer">Calculando tiempo juntos...</span>
     </div>
 
     <script>
         // --- 1. CONFIGURACIÓN ---
+        // Cambia la fecha por su aniversario
         const fechaInicio = new Date("2023-05-03T00:00:00"); 
         
         const mensajes = [
@@ -92,8 +94,9 @@
         // --- 2. PREPARACIÓN DEL LIENZO ---
         const canvas = document.getElementById('treeCanvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = 600;
-        canvas.height = 500; 
+        // Aumentamos la resolución para un árbol más detallado y grande
+        canvas.width = 700;
+        canvas.height = 550; 
 
         // --- 3. CARGA DE IMÁGENES ---
         let imagenesCargadas = 0;
@@ -108,7 +111,7 @@
         function iniciarCuandoTodoCargue() {
             imagenesCargadas++;
             if (imagenesCargadas === totalImagenes) {
-                setTimeout(startSequence, 500); 
+                setTimeout(startSequence, 400); 
             }
         }
 
@@ -117,34 +120,45 @@
 
         // --- 4. SECUENCIA DE ANIMACIÓN ---
         function startSequence() {
-            dibujarCesped(); 
+            dibujarCesped(); // Dibujamos el césped denso
             actualizarTemporizador(); 
             setInterval(actualizarTemporizador, 1000);
             
+            // Retraso para que el árbol crezca sobre el césped
             setTimeout(() => {
-                dibujarRama(canvas.width / 2, canvas.height - 20, 95, 0, 10);
-            }, 300);
+                dibujarRama(canvas.width / 2, canvas.height - 30, 110, 0, 11);
+            }, 200);
 
+            // Iniciamos la máquina de escribir
             setTimeout(escribirTexto, 3500); 
         }
 
         // --- 5. FUNCIONES DE DIBUJO ---
+        
         function dibujarCesped() {
-            const numeroTulipanes = 45; 
-            const alturaSuelo = canvas.height - 20;
-            // Ajustamos las proporciones para el nuevo tulipán
-            const anchoImagen = 22; 
-            const altoImagen = 40;
+            // Aumentamos mucho la cantidad para un campo real (de 45 a 120)
+            const numeroTulipanes = 120; 
+            const alturaSuelo = canvas.height - 30;
+            
+            // Parámetros de distribución para llenar más la base
+            const anchoImagen = 20; 
+            const altoImagen = 38;
 
             for (let i = 0; i < numeroTulipanes; i++) {
-                const x = Math.random() * (canvas.width + 40) - 20; 
-                const y = alturaSuelo - altoImagen + (Math.random() * 20);
-                const escala = 0.8 + Math.random() * 0.3;
-                const anguloRad = (Math.random() - 0.5) * 15 * Math.PI / 180;
+                // Posiciones más distribuidas, incluso fuera de cámara
+                const x = Math.random() * (canvas.width + 100) - 50; 
+                // Efecto profundidad mayor
+                const y = alturaSuelo - altoImagen + (Math.random() * 30);
+                
+                const escala = 0.7 + Math.random() * 0.4;
+                // Más rotación aleatoria
+                const anguloRad = (Math.random() - 0.5) * 20 * Math.PI / 180;
 
                 ctx.save();
                 ctx.translate(x + (anchoImagen*escala)/2, y + (altoImagen*escala)/2);
                 ctx.rotate(anguloRad);
+                
+                // Dibujamos el tulipán PNG
                 ctx.drawImage(
                     imgTulipan, 
                     -(anchoImagen*escala)/2, 
@@ -161,31 +175,52 @@
             const endY = startY - len * Math.cos(angle * Math.PI / 180);
 
             ctx.beginPath();
-            ctx.strokeStyle = '#6f4e37'; 
+            ctx.strokeStyle = '#5c4033'; // Marrón madera más profundo
             ctx.lineWidth = branchWidth;
             ctx.lineCap = "round";
             ctx.moveTo(startX, startY);
             ctx.lineTo(endX, endY);
             ctx.stroke();
 
+            // -- CONDICIÓN DE FLORECIMIENTO --
             if (len < 12) {
-                // Ajustamos el tamaño para el nuevo girasol
-                const tamañoGirasol = 35; 
+                
+                // **Paso A: Dibujar foliage de fondo (Hojas densas)**
+                // Esto rellena los huecos vacíos antes de dibujar los girasoles
+                ctx.beginPath();
+                // Verdes orgánicos semi-transparentes
+                ctx.fillStyle = `rgba(34, 139, 34, 0.4)`; 
+                
+                // Dibujamos formas de hojas orgánicas
+                ctx.save();
+                ctx.translate(endX, endY);
+                for (let i = 0; i < 4; i++) {
+                    ctx.rotate(45 * Math.PI / 180);
+                    ctx.fillRect(-6, -6, 12, 12);
+                }
+                ctx.restore();
+
+                // **Paso B: Dibujar Girasoles PNG**
+                // Aumentamos cantidad (habrá más flores porque hay más ramas pequeñas)
+                const tamañoBase = 32; 
                 let escalaActual = 0;
-                const escalaFinal = 1;
-                const velocidadCrecimiento = 0.05;
+                // Variación aleatoria de escala (0.9 a 1.2)
+                const escalaFinal = 0.9 + Math.random() * 0.3;
+                const velocidadCrecimiento = 0.04 + Math.random() * 0.02;
 
                 function animarFlor() {
                     if (escalaActual < escalaFinal) {
                         ctx.save();
+                        // Centramos en la punta de la rama
                         ctx.translate(endX, endY);
                         ctx.scale(escalaActual, escalaActual);
+                        // Dibujamos el girasol PNG
                         ctx.drawImage(
                             imgGirasol, 
-                            -tamañoGirasol / 2, 
-                            -tamañoGirasol / 2, 
-                            tamañoGirasol, 
-                            tamañoGirasol
+                            -tamañoBase / 2, 
+                            -tamañoBase / 2, 
+                            tamañoBase, 
+                            tamañoBase
                         );
                         ctx.restore();
                         
@@ -193,17 +228,28 @@
                         requestAnimationFrame(animarFlor);
                     }
                 }
+                // Iniciamos animación de la flor
                 animarFlor();
                 return;
             }
 
+            // -- CRECIMIENTO RECURSIVO DEL ÁRBOL --
+            // Multiplicamos las ramas: de 2 divisiones pasamos a 3 divisiones en algunas ramas
             setTimeout(() => {
-                dibujarRama(endX, endY, len * 0.76, angle + 22, branchWidth * 0.65);
-                dibujarRama(endX, endY, len * 0.76, angle - 22, branchWidth * 0.65);
-            }, 140);
+                // Rama Derecha
+                dibujarRama(endX, endY, len * 0.77, angle + 21, branchWidth * 0.65);
+                // Rama Izquierda
+                dibujarRama(endX, endY, len * 0.77, angle - 21, branchWidth * 0.65);
+                
+                // Rama Central (para más densidad en el centro)
+                if (Math.random() > 0.3) {
+                    dibujarRama(endX, endY, len * 0.70, angle + (Math.random() - 0.5) * 10, branchWidth * 0.60);
+                }
+
+            }, 130);
         }
 
-        // --- 6. CRONÓMETRO Y TEXTO ---
+        // --- 6. CRONÓMETRO Y MÁQUINA DE ESCRIBIR (IGUAL QUE ANTES) ---
         function actualizarTemporizador() {
             const ahora = new Date();
             const diferencia = ahora - fechaInicio;
@@ -211,7 +257,7 @@
             const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
             const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
-            document.getElementById("timer").innerText = `${dias} días ${horas} horas ${minutos} minutos ${segundos} segundos`;
+            document.getElementById("timer").innerText = `${dias} días ${horas} h ${minutos} m ${segundos} s`;
         }
 
         const textContainer = document.getElementById('text-container');
