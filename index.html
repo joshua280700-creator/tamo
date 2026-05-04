@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flores para ti 🌻❤️</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #fdf6e3;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            color: #333;
+        }
+
+        #canvas-container {
+            width: 100%;
+            height: 50vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin-top: 5vh;
+        }
+
+        canvas {
+            background-color: transparent;
+        }
+
+        #text-container {
+            width: 80%;
+            max-width: 600px;
+            margin-top: 20px;
+            text-align: left;
+            min-height: 150px;
+        }
+
+        .line {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        #timer-container {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-align: center;
+            border-top: 1px solid #ccc;
+            padding-top: 15px;
+            width: 80%;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container">
+        <canvas id="treeCanvas"></canvas>
+    </div>
+
+    <div id="text-container"></div>
+
+    <div id="timer-container">
+        <div style="font-size: 0.9rem; font-weight: normal; margin-bottom: 5px;">Mi amor por ti comenzó hace...</div>
+        <span id="timer">Calculando...</span>
+    </div>
+
+    <script>
+        // --- 1. CONFIGURACIÓN DEL MENSAJE Y FECHA ---
+        // Cambia la fecha por su aniversario o el día que se conocieron
+        const fechaInicio = new Date("2023-05-03T00:00:00"); 
+
+        // Modifica estos textos a tu gusto. Podrías incluir algo sobre sus estudios de psicología o alguna broma local de ustedes.
+        const mensajes = [
+            "Flores amarillas para el amor de mi vida:",
+            " ",
+            "Si pudiera elegir un lugar seguro, sería a tu lado.",
+            "Cuanto más tiempo estoy contigo, más te amo.",
+            " ",
+            "- I Love You! ❤️"
+        ];
+
+
+        // --- 2. CRONÓMETRO ---
+        function actualizarTemporizador() {
+            const ahora = new Date();
+            const diferencia = ahora - fechaInicio;
+
+            const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+            const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+            const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
+
+            document.getElementById("timer").innerText = 
+                `${dias} días ${horas} horas ${minutos} minutos ${segundos} segundos`;
+        }
+        setInterval(actualizarTemporizador, 1000);
+        actualizarTemporizador();
+
+
+        // --- 3. EFECTO DE MÁQUINA DE ESCRIBIR ---
+        const textContainer = document.getElementById('text-container');
+        let lineaActual = 0;
+        let caracterActual = 0;
+
+        function escribirTexto() {
+            if (lineaActual < mensajes.length) {
+                if (caracterActual === 0) {
+                    const p = document.createElement('div');
+                    p.className = 'line';
+                    p.id = 'linea-' + lineaActual;
+                    textContainer.appendChild(p);
+                }
+
+                const lineaElemento = document.getElementById('linea-' + lineaActual);
+                lineaElemento.innerHTML += mensajes[lineaActual].charAt(caracterActual);
+                caracterActual++;
+
+                if (caracterActual >= mensajes[lineaActual].length) {
+                    caracterActual = 0;
+                    lineaActual++;
+                    setTimeout(escribirTexto, 500); // Pausa entre líneas
+                } else {
+                    setTimeout(escribirTexto, 50); // Velocidad de escritura
+                }
+            }
+        }
+        // Retrasamos el inicio del texto para dar tiempo a que crezca el árbol
+        setTimeout(escribirTexto, 3000); 
+
+
+        // --- 4. ANIMACIÓN DEL ÁRBOL EN CANVAS ---
+        const canvas = document.getElementById('treeCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = 400;
+        canvas.height = 400;
+
+        function drawTree(startX, startY, len, angle, branchWidth) {
+            ctx.beginPath();
+            ctx.save();
+            ctx.strokeStyle = '#5c4033'; // Color del tronco
+            ctx.fillStyle = '#5c4033';
+            ctx.lineWidth = branchWidth;
+            ctx.translate(startX, startY);
+            ctx.rotate(angle * Math.PI/180);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(0, -len);
+            ctx.stroke();
+
+            if (len < 15) {
+                // Dibujar girasol al final de las ramas pequeñas
+                ctx.font = "20px Arial";
+                ctx.fillText("🌻", -10, -len - 5);
+                ctx.restore();
+                return;
+            }
+
+            // Animación recursiva con retraso para que "crezca"
+            setTimeout(() => {
+                drawTree(0, -len, len * 0.75, angle + 15, branchWidth * 0.7);
+                drawTree(0, -len, len * 0.75, angle - 15, branchWidth * 0.7);
+            }, 100);
+
+            ctx.restore();
+        }
+
+        // Iniciar el dibujo del árbol (x, y, longitud, ángulo, grosor)
+        drawTree(canvas.width / 2, canvas.height, 100, 0, 10);
+
+    </script>
+</body>
+</html>
