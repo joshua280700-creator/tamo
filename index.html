@@ -72,10 +72,9 @@
 
     <script>
         // --- 1. CONFIGURACIÓN DEL MENSAJE Y FECHA ---
-        // Cambia la fecha por su aniversario o el día que se conocieron
+        // Cambia la fecha por su aniversario
         const fechaInicio = new Date("2023-05-03T00:00:00"); 
 
-        // Modifica estos textos a tu gusto. Podrías incluir algo sobre sus estudios de psicología o alguna broma local de ustedes.
         const mensajes = [
             "Flores amarillas para el amor de mi vida:",
             " ",
@@ -84,7 +83,6 @@
             " ",
             "- I Love You! ❤️"
         ];
-
 
         // --- 2. CRONÓMETRO ---
         function actualizarTemporizador() {
@@ -101,7 +99,6 @@
         }
         setInterval(actualizarTemporizador, 1000);
         actualizarTemporizador();
-
 
         // --- 3. EFECTO DE MÁQUINA DE ESCRIBIR ---
         const textContainer = document.getElementById('text-container');
@@ -124,54 +121,53 @@
                 if (caracterActual >= mensajes[lineaActual].length) {
                     caracterActual = 0;
                     lineaActual++;
-                    setTimeout(escribirTexto, 500); // Pausa entre líneas
+                    setTimeout(escribirTexto, 500); 
                 } else {
-                    setTimeout(escribirTexto, 50); // Velocidad de escritura
+                    setTimeout(escribirTexto, 50); 
                 }
             }
         }
-        // Retrasamos el inicio del texto para dar tiempo a que crezca el árbol
-        setTimeout(escribirTexto, 3000); 
-
+        // Retrasamos el inicio del texto para que el árbol crezca primero un poco
+        setTimeout(escribirTexto, 1500); 
 
         // --- 4. ANIMACIÓN DEL ÁRBOL EN CANVAS ---
         const canvas = document.getElementById('treeCanvas');
         const ctx = canvas.getContext('2d');
         
-        canvas.width = 400;
+        // Ajustamos el tamaño para que el árbol respire mejor
+        canvas.width = 600;
         canvas.height = 400;
 
-        function drawTree(startX, startY, len, angle, branchWidth) {
+        function drawBranch(startX, startY, len, angle, branchWidth) {
+            // Calculamos matemáticamente el punto final de esta rama específica
+            const endX = startX + len * Math.sin(angle * Math.PI / 180);
+            const endY = startY - len * Math.cos(angle * Math.PI / 180);
+
             ctx.beginPath();
-            ctx.save();
-            ctx.strokeStyle = '#5c4033'; // Color del tronco
-            ctx.fillStyle = '#5c4033';
+            ctx.strokeStyle = '#5c4033'; 
             ctx.lineWidth = branchWidth;
-            ctx.translate(startX, startY);
-            ctx.rotate(angle * Math.PI/180);
-            ctx.moveTo(0, 0);
-            ctx.lineTo(0, -len);
+            ctx.lineCap = "round";
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
             ctx.stroke();
 
-            if (len < 15) {
-                // Dibujar girasol al final de las ramas pequeñas
-                ctx.font = "20px Arial";
-                ctx.fillText("🌻", -10, -len - 5);
-                ctx.restore();
+            // Condición para detener el crecimiento y dibujar el girasol
+            if (len < 12) {
+                ctx.font = "24px Arial";
+                // Ajuste de coordenadas para centrar el emoji en la punta de la rama
+                ctx.fillText("🌻", endX - 12, endY + 8);
                 return;
             }
 
-            // Animación recursiva con retraso para que "crezca"
+            // Animación: llamamos a la función de nuevo con un retraso para generar las sub-ramas
             setTimeout(() => {
-                drawTree(0, -len, len * 0.75, angle + 15, branchWidth * 0.7);
-                drawTree(0, -len, len * 0.75, angle - 15, branchWidth * 0.7);
-            }, 100);
-
-            ctx.restore();
+                drawBranch(endX, endY, len * 0.75, angle + 20, branchWidth * 0.7); // Rama derecha
+                drawBranch(endX, endY, len * 0.75, angle - 20, branchWidth * 0.7); // Rama izquierda
+            }, 150); // <-- Puedes bajar este número (ej. 80) si quieres que crezca más rápido
         }
 
-        // Iniciar el dibujo del árbol (x, y, longitud, ángulo, grosor)
-        drawTree(canvas.width / 2, canvas.height, 100, 0, 10);
+        // Iniciar el dibujo (X central, Y hasta abajo, largo inicial 90, ángulo 0 [hacia arriba], grosor 10)
+        drawBranch(canvas.width / 2, canvas.height, 90, 0, 10);
 
     </script>
 </body>
