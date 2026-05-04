@@ -18,6 +18,52 @@
             overflow-x: hidden;
         }
 
+        /* --- PANTALLA DE INICIO --- */
+        #start-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #fdfaf3;
+            z-index: 10;
+        }
+
+        #start-btn {
+            width: 150px;
+            cursor: pointer;
+            animation: latido 1.5s infinite; /* Animación para que "lata" */
+            transition: opacity 0.5s;
+        }
+
+        #start-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #b08a68;
+            font-weight: bold;
+            animation: latido 1.5s infinite;
+        }
+
+        @keyframes latido {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+
+        /* --- CONTENIDO PRINCIPAL (Oculto al inicio) --- */
+        #main-content {
+            display: none; /* Se oculta hasta que haga clic */
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
         #canvas-container {
             width: 100%;
             height: 65vh; 
@@ -64,20 +110,27 @@
 </head>
 <body>
 
-    <div id="canvas-container">
-        <canvas id="treeCanvas"></canvas>
+    <div id="start-screen">
+        <img src="girasol.png" alt="Toca aquí" id="start-btn" style="display: none;">
+        <div id="start-text" style="display: none;">Toca el girasol ✨</div>
+        <div id="loading-text">Cargando sorpresa...</div>
     </div>
 
-    <div id="text-container"></div>
+    <div id="main-content">
+        <div id="canvas-container">
+            <canvas id="treeCanvas"></canvas>
+        </div>
 
-    <div id="timer-container">
-        <div style="font-size: 0.8rem; font-weight: normal; margin-bottom: 4px; color: #777;">Mi amor por ti comenzó hace...</div>
-        <span id="timer">Calculando tiempo juntos...</span>
+        <div id="text-container"></div>
+
+        <div id="timer-container">
+            <div style="font-size: 0.8rem; font-weight: normal; margin-bottom: 4px; color: #777;">Mi amor por ti comenzó hace...</div>
+            <span id="timer">Calculando tiempo juntos...</span>
+        </div>
     </div>
 
     <script>
         // --- 1. CONFIGURACIÓN ---
-        // Fecha de inicio: 26 de noviembre de 2024
         const fechaInicio = new Date("2024-11-26T00:00:00"); 
         
         const mensajes = [
@@ -96,7 +149,7 @@
         canvas.width = 700;
         canvas.height = 550; 
 
-        // --- 3. CARGA DE IMÁGENES ---
+        // --- 3. CARGA DE IMÁGENES E INTERACCIÓN ---
         let imagenesCargadas = 0;
         const totalImagenes = 2;
 
@@ -106,10 +159,35 @@
         const imgTulipan = new Image();
         imgTulipan.src = 'tulipan_blanco.png'; 
 
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const startText = document.getElementById('start-text');
+        const loadingText = document.getElementById('loading-text');
+        const mainContent = document.getElementById('main-content');
+
         function iniciarCuandoTodoCargue() {
             imagenesCargadas++;
             if (imagenesCargadas === totalImagenes) {
-                setTimeout(startSequence, 400); 
+                // Cuando las imágenes cargan, quitamos el texto de "Cargando" y mostramos el botón
+                loadingText.style.display = 'none';
+                startBtn.style.display = 'block';
+                startText.style.display = 'block';
+
+                // Agregamos el evento de clic al girasol
+                startBtn.addEventListener('click', () => {
+                    // Ocultamos la pantalla de inicio
+                    startScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        startScreen.style.display = 'none';
+                        // Mostramos el contenido principal
+                        mainContent.style.display = 'flex';
+                        setTimeout(() => {
+                            mainContent.style.opacity = '1';
+                            // Iniciamos toda la magia
+                            startSequence();
+                        }, 100);
+                    }, 500);
+                });
             }
         }
 
@@ -122,10 +200,9 @@
             actualizarTemporizador(); 
             setInterval(actualizarTemporizador, 1000);
             
-            // Bajamos el punto de inicio del árbol (de -30 a -10) y acortamos el tronco inicial (de 110 a 95)
             setTimeout(() => {
                 dibujarRama(canvas.width / 2, canvas.height - 10, 95, 0, 12);
-            }, 200);
+            }, 500);
 
             setTimeout(escribirTexto, 3500); 
         }
@@ -133,7 +210,7 @@
         // --- 5. FUNCIONES DE DIBUJO ---
         function dibujarCesped() {
             const numeroTulipanes = 120; 
-            const alturaSuelo = canvas.height - 20; // Ajustado al nuevo nivel del suelo
+            const alturaSuelo = canvas.height - 20; 
             const anchoImagen = 20; 
             const altoImagen = 38;
 
@@ -165,7 +242,6 @@
 
             // -- CONDICIÓN DE FLORECIMIENTO --
             if (len < 12) {
-                // Follaje verde de fondo
                 ctx.beginPath();
                 ctx.fillStyle = `rgba(34, 139, 34, 0.4)`; 
                 ctx.save();
@@ -176,7 +252,6 @@
                 }
                 ctx.restore();
 
-                // Girasol
                 const tamañoBase = 32; 
                 let escalaActual = 0;
                 const escalaFinal = 0.9 + Math.random() * 0.3;
@@ -198,18 +273,15 @@
                 return;
             }
 
-            // -- CRECIMIENTO DEL ÁRBOL (Lógica modificada para rellenar el centro) --
+            // -- CRECIMIENTO DEL ÁRBOL --
             setTimeout(() => {
-                // Ramas laterales (se abren un poco más, ángulo 25)
                 dibujarRama(endX, endY, len * 0.75, angle + 25, branchWidth * 0.65);
                 dibujarRama(endX, endY, len * 0.75, angle - 25, branchWidth * 0.65);
                 
-                // RAMAS CENTRALES EXTRA: Esto rellena el hueco azul que marcaste
-                if (Math.random() > 0.15) { // Alta probabilidad de sacar rama al centro
-                    // Multiplicador 0.65 hace que florezcan antes (en el medio del árbol)
+                if (Math.random() > 0.15) { 
                     dibujarRama(endX, endY, len * 0.65, angle + (Math.random() - 0.5) * 15, branchWidth * 0.60);
                 }
-                if (Math.random() > 0.6) { // Ramitas extra aún más cortas para tupir
+                if (Math.random() > 0.6) { 
                     dibujarRama(endX, endY, len * 0.45, angle + (Math.random() - 0.5) * 20, branchWidth * 0.50);
                 }
 
