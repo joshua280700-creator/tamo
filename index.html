@@ -34,9 +34,9 @@
         }
 
         #start-btn {
-            width: 150px;
+            width: 130px; /* Un poco más adaptado a celulares */
             cursor: pointer;
-            animation: latido 1.5s infinite; /* Animación para que "lata" */
+            animation: latido 1.5s infinite; 
             transition: opacity 0.5s;
         }
 
@@ -46,6 +46,8 @@
             color: #b08a68;
             font-weight: bold;
             animation: latido 1.5s infinite;
+            text-align: center;
+            padding: 0 20px;
         }
 
         @keyframes latido {
@@ -54,9 +56,9 @@
             100% { transform: scale(1); }
         }
 
-        /* --- CONTENIDO PRINCIPAL (Oculto al inicio) --- */
+        /* --- CONTENIDO PRINCIPAL --- */
         #main-content {
-            display: none; /* Se oculta hasta que haga clic */
+            display: none; 
             width: 100%;
             flex-direction: column;
             align-items: center;
@@ -66,23 +68,25 @@
 
         #canvas-container {
             width: 100%;
-            height: 65vh; 
+            /* Altura adaptativa */
+            height: 55vh; 
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            margin-top: 1vh;
+            margin-top: 2vh;
         }
 
         canvas {
             background-color: transparent;
+            max-width: 100%; /* Evita que se desborde en celular */
         }
 
         #text-container {
-            width: 85%;
+            width: 90%;
             max-width: 650px;
             margin-top: 10px;
             text-align: left;
-            min-height: 120px;
+            min-height: 150px;
         }
 
         .line {
@@ -92,19 +96,32 @@
         }
 
         #timer-container {
-            margin-top: 10px;
+            margin-top: auto;
             font-weight: bold;
             font-size: 1.1rem;
             text-align: center;
             border-top: 1px solid #e0e0e0;
             padding-top: 12px;
-            width: 85%;
+            width: 90%;
             max-width: 650px;
-            padding-bottom: 15px;
+            padding-bottom: 20px;
         }
         
         #timer {
             color: #b08a68; 
+        }
+
+        /* --- MEDIA QUERIES PARA CELULAR --- */
+        @media (max-width: 600px) {
+            .line {
+                font-size: 0.9rem; /* Letra un poco más pequeña para que quepa bien */
+            }
+            #timer-container {
+                font-size: 1rem;
+            }
+            #canvas-container {
+                height: 50vh; /* Da más espacio al texto abajo en pantallas chicas */
+            }
         }
     </style>
 </head>
@@ -113,7 +130,7 @@
     <div id="start-screen">
         <img src="girasol.png" alt="Toca aquí" id="start-btn" style="display: none;">
         <div id="start-text" style="display: none;">Toca el girasol ✨</div>
-        <div id="loading-text">Cargando sorpresa...</div>
+        <div id="loading-text" style="color: #888; font-family: sans-serif;">Cargando sorpresa...</div>
     </div>
 
     <div id="main-content">
@@ -133,6 +150,7 @@
         // --- 1. CONFIGURACIÓN ---
         const fechaInicio = new Date("2024-11-26T00:00:00"); 
         
+        // Agregamos tu firma como último mensaje
         const mensajes = [
             "Flores para el amor de mi vida, mi futura psicóloga favorita:",
             " ",
@@ -140,14 +158,19 @@
             "Si pudiera elegir un lugar seguro, sería siempre a tu lado.",
             "Cuanto más tiempo estoy contigo, más te amo.",
             " ",
-            "Te amo mi niña hermosa ❤️"
+            "Te amo mi niña hermosa ❤️",
+            " ",
+            "Atte: el amor de tu vida, Joshua Gamboa"
         ];
 
-        // --- 2. PREPARACIÓN DEL LIENZO ---
+        // --- 2. PREPARACIÓN DEL LIENZO (RESPONSIVO) ---
         const canvas = document.getElementById('treeCanvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = 700;
-        canvas.height = 550; 
+        
+        // Detectamos si es celular o computadora para darle el tamaño correcto al árbol
+        const esCelular = window.innerWidth < 600;
+        canvas.width = esCelular ? window.innerWidth * 0.95 : 700;
+        canvas.height = esCelular ? 450 : 550; 
 
         // --- 3. CARGA DE IMÁGENES E INTERACCIÓN ---
         let imagenesCargadas = 0;
@@ -168,22 +191,17 @@
         function iniciarCuandoTodoCargue() {
             imagenesCargadas++;
             if (imagenesCargadas === totalImagenes) {
-                // Cuando las imágenes cargan, quitamos el texto de "Cargando" y mostramos el botón
                 loadingText.style.display = 'none';
                 startBtn.style.display = 'block';
                 startText.style.display = 'block';
 
-                // Agregamos el evento de clic al girasol
                 startBtn.addEventListener('click', () => {
-                    // Ocultamos la pantalla de inicio
                     startScreen.style.opacity = '0';
                     setTimeout(() => {
                         startScreen.style.display = 'none';
-                        // Mostramos el contenido principal
                         mainContent.style.display = 'flex';
                         setTimeout(() => {
                             mainContent.style.opacity = '1';
-                            // Iniciamos toda la magia
                             startSequence();
                         }, 100);
                     }, 500);
@@ -200,8 +218,12 @@
             actualizarTemporizador(); 
             setInterval(actualizarTemporizador, 1000);
             
+            // Adaptamos el largo y grosor del tronco según la pantalla
+            const largoTronco = esCelular ? 70 : 95;
+            const grosorTronco = esCelular ? 9 : 12;
+
             setTimeout(() => {
-                dibujarRama(canvas.width / 2, canvas.height - 10, 95, 0, 12);
+                dibujarRama(canvas.width / 2, canvas.height - 10, largoTronco, 0, grosorTronco);
             }, 500);
 
             setTimeout(escribirTexto, 3500); 
@@ -209,10 +231,11 @@
 
         // --- 5. FUNCIONES DE DIBUJO ---
         function dibujarCesped() {
-            const numeroTulipanes = 120; 
+            // Un poco menos de tulipanes si es celular para que no se sature la memoria
+            const numeroTulipanes = esCelular ? 80 : 120; 
             const alturaSuelo = canvas.height - 20; 
-            const anchoImagen = 20; 
-            const altoImagen = 38;
+            const anchoImagen = esCelular ? 16 : 20; 
+            const altoImagen = esCelular ? 30 : 38;
 
             for (let i = 0; i < numeroTulipanes; i++) {
                 const x = Math.random() * (canvas.width + 100) - 50; 
@@ -240,8 +263,11 @@
             ctx.lineTo(endX, endY);
             ctx.stroke();
 
+            // Límite de crecimiento también adaptado al celular
+            const limiteCrecimiento = esCelular ? 9 : 12;
+
             // -- CONDICIÓN DE FLORECIMIENTO --
-            if (len < 12) {
+            if (len < limiteCrecimiento) {
                 ctx.beginPath();
                 ctx.fillStyle = `rgba(34, 139, 34, 0.4)`; 
                 ctx.save();
@@ -252,7 +278,7 @@
                 }
                 ctx.restore();
 
-                const tamañoBase = 32; 
+                const tamañoBase = esCelular ? 26 : 32; 
                 let escalaActual = 0;
                 const escalaFinal = 0.9 + Math.random() * 0.3;
                 const velocidadCrecimiento = 0.04 + Math.random() * 0.02;
@@ -308,6 +334,15 @@
                     const p = document.createElement('div');
                     p.className = 'line';
                     p.id = 'linea-' + lineaActual;
+                    
+                    // Si es la última línea (tu firma), la ponemos en cursiva y a la derecha
+                    if (lineaActual === mensajes.length - 1) {
+                        p.style.textAlign = 'right';
+                        p.style.fontStyle = 'italic';
+                        p.style.marginTop = '15px';
+                        p.style.color = '#b08a68'; // Mismo color del cronómetro
+                    }
+                    
                     textContainer.appendChild(p);
                 }
                 const lineaElemento = document.getElementById('linea-' + lineaActual);
