@@ -8,7 +8,6 @@
         body {
             margin: 0;
             padding: 0;
-            /* Fondo cremita muy suave para que resalten los colores */
             background-color: #fdfaf3; 
             font-family: 'Courier New', Courier, monospace;
             display: flex;
@@ -21,7 +20,7 @@
 
         #canvas-container {
             width: 100%;
-            height: 65vh; /* Un poco más alto para el árbol frondoso */
+            height: 65vh; 
             display: flex;
             justify-content: center;
             align-items: flex-end;
@@ -59,7 +58,7 @@
         }
         
         #timer {
-            color: #b08a68; /* Marrón suave para el cronómetro */
+            color: #b08a68; 
         }
     </style>
 </head>
@@ -78,8 +77,8 @@
 
     <script>
         // --- 1. CONFIGURACIÓN ---
-        // Cambia la fecha por su aniversario
-        const fechaInicio = new Date("2023-05-03T00:00:00"); 
+        // Fecha de inicio: 26 de noviembre de 2024
+        const fechaInicio = new Date("2024-11-26T00:00:00"); 
         
         const mensajes = [
             "Flores para el amor de mi vida, mi futura psicóloga favorita:",
@@ -88,13 +87,12 @@
             "Si pudiera elegir un lugar seguro, sería siempre a tu lado.",
             "Cuanto más tiempo estoy contigo, más te amo.",
             " ",
-            "¡Feliz aniversario! ✨🤍"
+            "Te amo mi niña hermosa ❤️"
         ];
 
         // --- 2. PREPARACIÓN DEL LIENZO ---
         const canvas = document.getElementById('treeCanvas');
         const ctx = canvas.getContext('2d');
-        // Aumentamos la resolución para un árbol más detallado y grande
         canvas.width = 700;
         canvas.height = 550; 
 
@@ -120,52 +118,35 @@
 
         // --- 4. SECUENCIA DE ANIMACIÓN ---
         function startSequence() {
-            dibujarCesped(); // Dibujamos el césped denso
+            dibujarCesped(); 
             actualizarTemporizador(); 
             setInterval(actualizarTemporizador, 1000);
             
-            // Retraso para que el árbol crezca sobre el césped
+            // Bajamos el punto de inicio del árbol (de -30 a -10) y acortamos el tronco inicial (de 110 a 95)
             setTimeout(() => {
-                dibujarRama(canvas.width / 2, canvas.height - 30, 110, 0, 11);
+                dibujarRama(canvas.width / 2, canvas.height - 10, 95, 0, 12);
             }, 200);
 
-            // Iniciamos la máquina de escribir
             setTimeout(escribirTexto, 3500); 
         }
 
         // --- 5. FUNCIONES DE DIBUJO ---
-        
         function dibujarCesped() {
-            // Aumentamos mucho la cantidad para un campo real (de 45 a 120)
             const numeroTulipanes = 120; 
-            const alturaSuelo = canvas.height - 30;
-            
-            // Parámetros de distribución para llenar más la base
+            const alturaSuelo = canvas.height - 20; // Ajustado al nuevo nivel del suelo
             const anchoImagen = 20; 
             const altoImagen = 38;
 
             for (let i = 0; i < numeroTulipanes; i++) {
-                // Posiciones más distribuidas, incluso fuera de cámara
                 const x = Math.random() * (canvas.width + 100) - 50; 
-                // Efecto profundidad mayor
                 const y = alturaSuelo - altoImagen + (Math.random() * 30);
-                
                 const escala = 0.7 + Math.random() * 0.4;
-                // Más rotación aleatoria
                 const anguloRad = (Math.random() - 0.5) * 20 * Math.PI / 180;
 
                 ctx.save();
                 ctx.translate(x + (anchoImagen*escala)/2, y + (altoImagen*escala)/2);
                 ctx.rotate(anguloRad);
-                
-                // Dibujamos el tulipán PNG
-                ctx.drawImage(
-                    imgTulipan, 
-                    -(anchoImagen*escala)/2, 
-                    -(altoImagen*escala)/2, 
-                    anchoImagen * escala, 
-                    altoImagen * escala
-                );
+                ctx.drawImage(imgTulipan, -(anchoImagen*escala)/2, -(altoImagen*escala)/2, anchoImagen * escala, altoImagen * escala);
                 ctx.restore();
             }
         }
@@ -175,7 +156,7 @@
             const endY = startY - len * Math.cos(angle * Math.PI / 180);
 
             ctx.beginPath();
-            ctx.strokeStyle = '#5c4033'; // Marrón madera más profundo
+            ctx.strokeStyle = '#5c4033'; 
             ctx.lineWidth = branchWidth;
             ctx.lineCap = "round";
             ctx.moveTo(startX, startY);
@@ -184,14 +165,9 @@
 
             // -- CONDICIÓN DE FLORECIMIENTO --
             if (len < 12) {
-                
-                // **Paso A: Dibujar foliage de fondo (Hojas densas)**
-                // Esto rellena los huecos vacíos antes de dibujar los girasoles
+                // Follaje verde de fondo
                 ctx.beginPath();
-                // Verdes orgánicos semi-transparentes
                 ctx.fillStyle = `rgba(34, 139, 34, 0.4)`; 
-                
-                // Dibujamos formas de hojas orgánicas
                 ctx.save();
                 ctx.translate(endX, endY);
                 for (let i = 0; i < 4; i++) {
@@ -200,56 +176,47 @@
                 }
                 ctx.restore();
 
-                // **Paso B: Dibujar Girasoles PNG**
-                // Aumentamos cantidad (habrá más flores porque hay más ramas pequeñas)
+                // Girasol
                 const tamañoBase = 32; 
                 let escalaActual = 0;
-                // Variación aleatoria de escala (0.9 a 1.2)
                 const escalaFinal = 0.9 + Math.random() * 0.3;
                 const velocidadCrecimiento = 0.04 + Math.random() * 0.02;
 
                 function animarFlor() {
                     if (escalaActual < escalaFinal) {
                         ctx.save();
-                        // Centramos en la punta de la rama
                         ctx.translate(endX, endY);
                         ctx.scale(escalaActual, escalaActual);
-                        // Dibujamos el girasol PNG
-                        ctx.drawImage(
-                            imgGirasol, 
-                            -tamañoBase / 2, 
-                            -tamañoBase / 2, 
-                            tamañoBase, 
-                            tamañoBase
-                        );
+                        ctx.drawImage(imgGirasol, -tamañoBase / 2, -tamañoBase / 2, tamañoBase, tamañoBase);
                         ctx.restore();
                         
                         escalaActual += velocidadCrecimiento;
                         requestAnimationFrame(animarFlor);
                     }
                 }
-                // Iniciamos animación de la flor
                 animarFlor();
                 return;
             }
 
-            // -- CRECIMIENTO RECURSIVO DEL ÁRBOL --
-            // Multiplicamos las ramas: de 2 divisiones pasamos a 3 divisiones en algunas ramas
+            // -- CRECIMIENTO DEL ÁRBOL (Lógica modificada para rellenar el centro) --
             setTimeout(() => {
-                // Rama Derecha
-                dibujarRama(endX, endY, len * 0.77, angle + 21, branchWidth * 0.65);
-                // Rama Izquierda
-                dibujarRama(endX, endY, len * 0.77, angle - 21, branchWidth * 0.65);
+                // Ramas laterales (se abren un poco más, ángulo 25)
+                dibujarRama(endX, endY, len * 0.75, angle + 25, branchWidth * 0.65);
+                dibujarRama(endX, endY, len * 0.75, angle - 25, branchWidth * 0.65);
                 
-                // Rama Central (para más densidad en el centro)
-                if (Math.random() > 0.3) {
-                    dibujarRama(endX, endY, len * 0.70, angle + (Math.random() - 0.5) * 10, branchWidth * 0.60);
+                // RAMAS CENTRALES EXTRA: Esto rellena el hueco azul que marcaste
+                if (Math.random() > 0.15) { // Alta probabilidad de sacar rama al centro
+                    // Multiplicador 0.65 hace que florezcan antes (en el medio del árbol)
+                    dibujarRama(endX, endY, len * 0.65, angle + (Math.random() - 0.5) * 15, branchWidth * 0.60);
+                }
+                if (Math.random() > 0.6) { // Ramitas extra aún más cortas para tupir
+                    dibujarRama(endX, endY, len * 0.45, angle + (Math.random() - 0.5) * 20, branchWidth * 0.50);
                 }
 
             }, 130);
         }
 
-        // --- 6. CRONÓMETRO Y MÁQUINA DE ESCRIBIR (IGUAL QUE ANTES) ---
+        // --- 6. CRONÓMETRO Y TEXTO ---
         function actualizarTemporizador() {
             const ahora = new Date();
             const diferencia = ahora - fechaInicio;
