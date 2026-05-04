@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flores para ti 🌻❤️</title>
+    <title>Flores para ti 🌻🤍</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #fdf6e3;
+            background-color: #fdfaf3; 
             font-family: 'Courier New', Courier, monospace;
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
             color: #333;
+            overflow-x: hidden;
         }
 
         #canvas-container {
             width: 100%;
-            height: 50vh;
+            height: 60vh;
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            margin-top: 5vh;
+            margin-top: 2vh;
         }
 
         canvas {
@@ -32,28 +32,33 @@
         }
 
         #text-container {
-            width: 80%;
-            max-width: 600px;
-            margin-top: 20px;
+            width: 85%;
+            max-width: 650px;
+            margin-top: 15px;
             text-align: left;
-            min-height: 150px;
+            min-height: 140px;
         }
 
         .line {
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-            line-height: 1.5;
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+            line-height: 1.4;
         }
 
         #timer-container {
-            margin-top: 10px;
+            margin-top: 15px;
             font-weight: bold;
             font-size: 1.2rem;
             text-align: center;
-            border-top: 1px solid #ccc;
+            border-top: 1px solid #e0e0e0;
             padding-top: 15px;
-            width: 80%;
-            max-width: 600px;
+            width: 85%;
+            max-width: 650px;
+            padding-bottom: 20px;
+        }
+        
+        #timer {
+            color: #d2a679; 
         }
     </style>
 </head>
@@ -66,44 +71,151 @@
     <div id="text-container"></div>
 
     <div id="timer-container">
-        <div style="font-size: 0.9rem; font-weight: normal; margin-bottom: 5px;">Mi amor por ti comenzó hace...</div>
-        <span id="timer">Calculando...</span>
+        <div style="font-size: 0.85rem; font-weight: normal; margin-bottom: 5px; color: #777;">Mi amor por ti comenzó hace...</div>
+        <span id="timer">Calculando tiempo juntos...</span>
     </div>
 
     <script>
-        // --- 1. CONFIGURACIÓN DEL MENSAJE Y FECHA ---
-        // Cambia la fecha por su aniversario
+        // --- 1. CONFIGURACIÓN ---
         const fechaInicio = new Date("2023-05-03T00:00:00"); 
-
+        
         const mensajes = [
-            "Flores amarillas para el amor de mi vida:",
+            "Flores para el amor de mi vida, mi futura psicóloga favorita:",
             " ",
-            "Si pudiera elegir un lugar seguro, sería a tu lado.",
+            "Girasoles por tu luz, y tulipanes blancos por la paz que me das.",
+            "Si pudiera elegir un lugar seguro, sería siempre a tu lado.",
             "Cuanto más tiempo estoy contigo, más te amo.",
             " ",
-            "- I Love You! ❤️"
+            "¡Feliz aniversario! ✨🤍"
         ];
 
-        // --- 2. CRONÓMETRO ---
+        // --- 2. PREPARACIÓN DEL LIENZO ---
+        const canvas = document.getElementById('treeCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 600;
+        canvas.height = 500; 
+
+        // --- 3. CARGA DE IMÁGENES ---
+        let imagenesCargadas = 0;
+        const totalImagenes = 2;
+
+        const imgGirasol = new Image();
+        imgGirasol.src = 'girasol.png'; 
+        
+        const imgTulipan = new Image();
+        imgTulipan.src = 'tulipan_blanco.png'; 
+
+        function iniciarCuandoTodoCargue() {
+            imagenesCargadas++;
+            if (imagenesCargadas === totalImagenes) {
+                setTimeout(startSequence, 500); 
+            }
+        }
+
+        imgGirasol.onload = iniciarCuandoTodoCargue;
+        imgTulipan.onload = iniciarCuandoTodoCargue;
+
+        // --- 4. SECUENCIA DE ANIMACIÓN ---
+        function startSequence() {
+            dibujarCesped(); 
+            actualizarTemporizador(); 
+            setInterval(actualizarTemporizador, 1000);
+            
+            setTimeout(() => {
+                dibujarRama(canvas.width / 2, canvas.height - 20, 95, 0, 10);
+            }, 300);
+
+            setTimeout(escribirTexto, 3500); 
+        }
+
+        // --- 5. FUNCIONES DE DIBUJO ---
+        function dibujarCesped() {
+            const numeroTulipanes = 45; 
+            const alturaSuelo = canvas.height - 20;
+            // Ajustamos las proporciones para el nuevo tulipán
+            const anchoImagen = 22; 
+            const altoImagen = 40;
+
+            for (let i = 0; i < numeroTulipanes; i++) {
+                const x = Math.random() * (canvas.width + 40) - 20; 
+                const y = alturaSuelo - altoImagen + (Math.random() * 20);
+                const escala = 0.8 + Math.random() * 0.3;
+                const anguloRad = (Math.random() - 0.5) * 15 * Math.PI / 180;
+
+                ctx.save();
+                ctx.translate(x + (anchoImagen*escala)/2, y + (altoImagen*escala)/2);
+                ctx.rotate(anguloRad);
+                ctx.drawImage(
+                    imgTulipan, 
+                    -(anchoImagen*escala)/2, 
+                    -(altoImagen*escala)/2, 
+                    anchoImagen * escala, 
+                    altoImagen * escala
+                );
+                ctx.restore();
+            }
+        }
+
+        function dibujarRama(startX, startY, len, angle, branchWidth) {
+            const endX = startX + len * Math.sin(angle * Math.PI / 180);
+            const endY = startY - len * Math.cos(angle * Math.PI / 180);
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#6f4e37'; 
+            ctx.lineWidth = branchWidth;
+            ctx.lineCap = "round";
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+
+            if (len < 12) {
+                // Ajustamos el tamaño para el nuevo girasol
+                const tamañoGirasol = 35; 
+                let escalaActual = 0;
+                const escalaFinal = 1;
+                const velocidadCrecimiento = 0.05;
+
+                function animarFlor() {
+                    if (escalaActual < escalaFinal) {
+                        ctx.save();
+                        ctx.translate(endX, endY);
+                        ctx.scale(escalaActual, escalaActual);
+                        ctx.drawImage(
+                            imgGirasol, 
+                            -tamañoGirasol / 2, 
+                            -tamañoGirasol / 2, 
+                            tamañoGirasol, 
+                            tamañoGirasol
+                        );
+                        ctx.restore();
+                        
+                        escalaActual += velocidadCrecimiento;
+                        requestAnimationFrame(animarFlor);
+                    }
+                }
+                animarFlor();
+                return;
+            }
+
+            setTimeout(() => {
+                dibujarRama(endX, endY, len * 0.76, angle + 22, branchWidth * 0.65);
+                dibujarRama(endX, endY, len * 0.76, angle - 22, branchWidth * 0.65);
+            }, 140);
+        }
+
+        // --- 6. CRONÓMETRO Y TEXTO ---
         function actualizarTemporizador() {
             const ahora = new Date();
             const diferencia = ahora - fechaInicio;
-
             const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
             const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
             const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
-
-            document.getElementById("timer").innerText = 
-                `${dias} días ${horas} horas ${minutos} minutos ${segundos} segundos`;
+            document.getElementById("timer").innerText = `${dias} días ${horas} horas ${minutos} minutos ${segundos} segundos`;
         }
-        setInterval(actualizarTemporizador, 1000);
-        actualizarTemporizador();
 
-        // --- 3. EFECTO DE MÁQUINA DE ESCRIBIR ---
         const textContainer = document.getElementById('text-container');
-        let lineaActual = 0;
-        let caracterActual = 0;
+        let lineaActual = 0; caracterActual = 0;
 
         function escribirTexto() {
             if (lineaActual < mensajes.length) {
@@ -113,62 +225,17 @@
                     p.id = 'linea-' + lineaActual;
                     textContainer.appendChild(p);
                 }
-
                 const lineaElemento = document.getElementById('linea-' + lineaActual);
                 lineaElemento.innerHTML += mensajes[lineaActual].charAt(caracterActual);
                 caracterActual++;
-
                 if (caracterActual >= mensajes[lineaActual].length) {
-                    caracterActual = 0;
-                    lineaActual++;
+                    caracterActual = 0; lineaActual++;
                     setTimeout(escribirTexto, 500); 
                 } else {
-                    setTimeout(escribirTexto, 50); 
+                    setTimeout(escribirTexto, 45); 
                 }
             }
         }
-        // Retrasamos el inicio del texto para que el árbol crezca primero un poco
-        setTimeout(escribirTexto, 1500); 
-
-        // --- 4. ANIMACIÓN DEL ÁRBOL EN CANVAS ---
-        const canvas = document.getElementById('treeCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        // Ajustamos el tamaño para que el árbol respire mejor
-        canvas.width = 600;
-        canvas.height = 400;
-
-        function drawBranch(startX, startY, len, angle, branchWidth) {
-            // Calculamos matemáticamente el punto final de esta rama específica
-            const endX = startX + len * Math.sin(angle * Math.PI / 180);
-            const endY = startY - len * Math.cos(angle * Math.PI / 180);
-
-            ctx.beginPath();
-            ctx.strokeStyle = '#5c4033'; 
-            ctx.lineWidth = branchWidth;
-            ctx.lineCap = "round";
-            ctx.moveTo(startX, startY);
-            ctx.lineTo(endX, endY);
-            ctx.stroke();
-
-            // Condición para detener el crecimiento y dibujar el girasol
-            if (len < 12) {
-                ctx.font = "24px Arial";
-                // Ajuste de coordenadas para centrar el emoji en la punta de la rama
-                ctx.fillText("🌻", endX - 12, endY + 8);
-                return;
-            }
-
-            // Animación: llamamos a la función de nuevo con un retraso para generar las sub-ramas
-            setTimeout(() => {
-                drawBranch(endX, endY, len * 0.75, angle + 20, branchWidth * 0.7); // Rama derecha
-                drawBranch(endX, endY, len * 0.75, angle - 20, branchWidth * 0.7); // Rama izquierda
-            }, 150); // <-- Puedes bajar este número (ej. 80) si quieres que crezca más rápido
-        }
-
-        // Iniciar el dibujo (X central, Y hasta abajo, largo inicial 90, ángulo 0 [hacia arriba], grosor 10)
-        drawBranch(canvas.width / 2, canvas.height, 90, 0, 10);
-
     </script>
 </body>
 </html>
