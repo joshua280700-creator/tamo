@@ -3,212 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nuestro Álbum ❤️</title>
+    <title>Nuestra Historia ❤️</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             background-color: #fdfaf3; 
             font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
             color: #333;
+            overflow-x: hidden;
         }
 
-        #album-container {
-            display: flex; 
+        /* Título inicial */
+        .intro-screen {
+            height: 100vh;
+            display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
-            width: 100%;
-            padding: 20px;
-            box-sizing: border-box;
-            animation: fadeIn 1s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .album-card {
-            background-color: white;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-            max-width: 500px;
-            width: 100%;
             text-align: center;
+            padding: 20px;
+        }
+
+        .intro-title {
+            font-size: 2rem;
+            color: #b08a68;
+            margin-bottom: 20px;
+        }
+
+        .scroll-indicator {
+            margin-top: 40px;
+            font-size: 1.2rem;
+            animation: bounce 2s infinite;
+            color: #888;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-15px); }
+            60% { transform: translateY(-7px); }
+        }
+
+        /* Secciones de la historia */
+        .story-section {
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
+            padding: 40px 20px;
+            opacity: 0; /* Oculto por defecto, se muestra al hacer scroll */
+            transform: translateY(50px);
+            transition: opacity 1.2s ease-out, transform 1.2s ease-out;
         }
 
-        /* Estilos para foto o video */
-        .media-content {
-            width: 100%;
-            max-height: 60vh;
-            object-fit: contain;
-            border-radius: 8px;
-            background-color: #f0f0f0;
-            display: none; /* Se oculta por defecto hasta saber qué es */
+        /* Clase que se agrega con JS cuando la sección es visible */
+        .story-section.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .album-text {
-            margin-top: 15px;
-            font-size: 1.1rem;
-            color: #444;
-            line-height: 1.4;
-            min-height: 60px;
-        }
-
-        .album-controls {
-            display: flex;
-            justify-content: space-between;
+        /* Contenedor de las fotos con efecto cinematográfico */
+        .image-container {
             width: 100%;
             max-width: 500px;
-            margin-top: 20px;
+            height: 65vh; /* Alto dinámico */
+            border-radius: 15px;
+            overflow: hidden; /* Oculta lo que se sale al hacer zoom */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+            position: relative;
+            background-color: #eee;
         }
 
-        .btn-nav {
-            padding: 10px 15px;
-            background-color: #d2a679;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 1rem;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            flex: 1;
-            margin: 0 5px;
-            transition: background-color 0.2s;
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Llena el contenedor sin deformar */
+            transform: scale(1);
+            transition: transform 10s ease-out;
         }
 
-        .btn-nav:hover { background-color: #b08a68; }
-        
-        .btn-nav:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-            box-shadow: none;
+        /* El efecto Ken Burns se activa cuando la sección es visible */
+        .story-section.visible .image-container img {
+            animation: kenBurns 15s alternate infinite ease-in-out;
+        }
+
+        @keyframes kenBurns {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.15) translate(-2%, 2%); }
+        }
+
+        /* Textos de la historia */
+        .story-text {
+            max-width: 600px;
+            font-size: 1.15rem;
+            line-height: 1.6;
+            text-align: center;
+            background: rgba(253, 250, 243, 0.85);
+            padding: 20px;
+            border-radius: 10px;
         }
 
         .btn-volver {
-            margin-top: 30px;
+            margin: 60px auto;
+            display: block;
             background: none;
             border: none;
             color: #b08a68;
             text-decoration: underline;
             font-family: inherit;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.1rem;
         }
 
         @media (max-width: 600px) {
-            .album-card { padding: 10px; }
-            .album-text { font-size: 1rem; }
+            .story-text { font-size: 1.05rem; padding: 15px; }
+            .image-container { height: 50vh; }
         }
     </style>
 </head>
 <body>
 
-    <div id="album-container">
-        <div class="album-card">
-            <img id="album-img" class="media-content" src="" alt="Recuerdo">
-            <video id="album-video" class="media-content" controls></video>
-            
-            <div id="album-text" class="album-text"></div>
-        </div>
-        
-        <div class="album-controls">
-            <button class="btn-nav" id="btn-prev">⬅️ Anterior</button>
-            <button class="btn-nav" id="btn-next">Siguiente ➡️</button>
-        </div>
-
-        <button class="btn-volver" onclick="window.location.href='index.html'">Volver al inicio</button>
+    <div class="intro-screen">
+        <h1 class="intro-title">Así comenzó nuestra historia...</h1>
+        <div class="scroll-indicator">Desliza hacia abajo 👇</div>
     </div>
 
+    <div class="story-section">
+        <div class="story-text">
+            Todo empezó en septiembre. Estábamos en la universidad, estudiando psicología. <br><br>
+            Yo no iba con la intención de encontrar a nadie, pero ahí estabas tú, siendo precisamente tú. En el momento en que te vi, me cautivó tu forma de ser: tan graciosa, tan real, diciendo siempre las cosas sin complicaciones. <br><br>
+            Me encantabas, pero decidí dejarlo a la suerte. No te hablé, por más que quisiera...
+        </div>
+    </div>
+
+    <div class="story-section">
+        <div class="story-text">
+            Entonces llegó ese día. Nuestra maestra favorita, Flor, nos juntó en equipo para una actividad de lectura.<br><br>
+            Recuerdo que me tocó ser el líder, organizando a todos porque estaban muy callados y penosos. Pero la verdad... ser el líder fue solo la excusa perfecta que usé para poder conseguir tu número de teléfono.
+        </div>
+    </div>
+
+    <div class="story-section">
+        <div class="image-container">
+            <img src="foto_parque.jpg" alt="Platicando en el parque">
+        </div>
+        <div class="story-text">
+            Pasaron los días y empezamos a hablar más. Cuando me dijiste que vivías en El Palmar me emocioné muchísimo; estábamos tan cerca que se sentía como un movimiento del destino.<br><br>
+            Comenzamos a salir a platicar al parque cerca de tu casa. Esta foto es del 29 de octubre de 2024, antes de ser novios.
+        </div>
+    </div>
+
+    <div class="story-section">
+        <div class="story-text">
+            Me gusta mucho esa foto porque captura tu esencia al natural, es algo que siempre logro hacer cuando te tomo fotos.<br><br>
+            Ese día, sentados ahí platicando, sentí una conexión tan grande contigo... una conexión que hasta el día de hoy me tiene perdidamente enamorado de ti.
+        </div>
+    </div>
+
+    <button class="btn-volver" onclick="window.location.href='index.html'">Volver al inicio</button>
+
     <script>
-        // ==========================================
-        // --- CONFIGURACIÓN DE TUS FOTOS Y VIDEOS ---
-        // ==========================================
-        // Si es foto, pon: tipo: 'foto'
-        // Si es video, pon: tipo: 'video'
+        // Esta función de JavaScript detecta cuando vas haciendo scroll
+        // y hace aparecer los textos y fotos suavemente (Intersection Observer)
         
-        const recuerdos = [
-            { 
-                tipo: 'foto',
-                src: "foto1.jpg", 
-                texto: "26 de Noviembre de 2024. El día que comenzó esta hermosa historia juntos. ❤️" 
-            },
-            { 
-                tipo: 'foto',
-                src: "foto2.jpg", 
-                texto: "Nuestras pláticas interminables y las tardes donde el tiempo se nos pasa volando." 
-            },
-            { 
-                tipo: 'video',
-                src: "video1.mp4", 
-                texto: "Amo tu sonrisa en este video. (Recuerda mantener los videos cortos para que carguen rápido)." 
-            },
-            { 
-                tipo: 'foto',
-                src: "foto3.jpg", 
-                texto: "Por todos los recuerdos que ya tenemos, y por todos los que nos faltan por crear. Te amo." 
-            }
-        ];
+        document.addEventListener("DOMContentLoaded", function() {
+            const sections = document.querySelectorAll('.story-section');
 
-        // ==========================================
-        // --- LÓGICA DEL ÁLBUM ---
-        // ==========================================
-        let indiceActual = 0;
-        const albumImg = document.getElementById('album-img');
-        const albumVideo = document.getElementById('album-video');
-        const albumText = document.getElementById('album-text');
-        const btnPrev = document.getElementById('btn-prev');
-        const btnNext = document.getElementById('btn-next');
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.3 // La animación empieza cuando el 30% de la sección es visible
+            };
 
-        function actualizarAlbum() {
-            const recuerdoActual = recuerdos[indiceActual];
-            
-            // Pausar el video anterior si estaba reproduciéndose
-            albumVideo.pause();
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
 
-            if (recuerdoActual.tipo === 'foto') {
-                albumVideo.style.display = 'none';
-                albumImg.src = recuerdoActual.src;
-                albumImg.style.display = 'block';
-            } else if (recuerdoActual.tipo === 'video') {
-                albumImg.style.display = 'none';
-                albumVideo.src = recuerdoActual.src;
-                albumVideo.style.display = 'block';
-            }
-
-            albumText.innerText = recuerdoActual.texto;
-            
-            btnPrev.disabled = (indiceActual === 0);
-            btnNext.disabled = (indiceActual === recuerdos.length - 1);
-        }
-
-        btnPrev.addEventListener('click', () => {
-            if (indiceActual > 0) {
-                indiceActual--;
-                actualizarAlbum();
-            }
+            sections.forEach(section => {
+                observer.observe(section);
+            });
         });
-
-        btnNext.addEventListener('click', () => {
-            if (indiceActual < recuerdos.length - 1) {
-                indiceActual++;
-                actualizarAlbum();
-            }
-        });
-
-        // Cargar el primer recuerdo al abrir la página
-        actualizarAlbum();
-
     </script>
 </body>
 </html>
