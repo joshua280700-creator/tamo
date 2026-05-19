@@ -18,7 +18,6 @@
             overflow-x: hidden;
         }
 
-        /* --- PANTALLA DE INICIO --- */
         #start-screen {
             display: flex;
             flex-direction: column;
@@ -56,7 +55,6 @@
             100% { transform: scale(1); }
         }
 
-        /* --- PORTADA (Árbol y Texto) --- */
         #main-content {
             display: none; 
             width: 100%;
@@ -107,11 +105,8 @@
             position: relative;
         }
         
-        #timer {
-            color: #b08a68; 
-        }
+        #timer { color: #b08a68; }
 
-        /* Botón para pasar al álbum */
         #btn-abrir-album {
             display: none;
             margin: 15px auto 0 auto;
@@ -138,81 +133,10 @@
             to { opacity: 1; }
         }
 
-        /* --- SECCIÓN DEL ÁLBUM DE FOTOS --- */
-        #album-container {
-            display: none; 
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            min-height: 100vh;
-            opacity: 0;
-            transition: opacity 1s ease-in;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .album-card {
-            background-color: white;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-            max-width: 500px;
-            width: 100%;
-            text-align: center;
-        }
-
-        .album-img {
-            width: 100%;
-            max-height: 60vh;
-            object-fit: contain; /* Para que la foto no se recorte mal */
-            border-radius: 8px;
-            background-color: #f0f0f0;
-        }
-
-        .album-text {
-            margin-top: 15px;
-            font-size: 1.1rem;
-            color: #444;
-            line-height: 1.4;
-            min-height: 60px; /* Evita que los botones salten mucho si el texto es corto */
-        }
-
-        .album-controls {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 500px;
-            margin-top: 20px;
-        }
-
-        .btn-nav {
-            padding: 10px 15px;
-            background-color: #d2a679;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 1rem;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            flex: 1;
-            margin: 0 5px;
-        }
-
-        .btn-nav:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        /* --- MEDIA QUERIES --- */
         @media (max-width: 600px) {
             .line { font-size: 0.9rem; }
             #timer-container { font-size: 1rem; }
             #canvas-container { height: 50vh; }
-            .album-card { padding: 10px; }
-            .album-text { font-size: 1rem; }
         }
     </style>
 </head>
@@ -236,23 +160,8 @@
         </div>
     </div>
 
-    <div id="album-container">
-        <div class="album-card">
-            <img id="album-img" class="album-img" src="" alt="Recuerdo de nosotros">
-            <div id="album-text" class="album-text"></div>
-        </div>
-        <div class="album-controls">
-            <button class="btn-nav" id="btn-prev">⬅️ Anterior</button>
-            <button class="btn-nav" id="btn-next">Siguiente ➡️</button>
-        </div>
-    </div>
-
     <script>
-        // ==========================================
-        // --- 1. CONFIGURACIÓN DEL ÁLBUM Y TEXTOS ---
-        // ==========================================
         const fechaInicio = new Date("2024-11-26T00:00:00"); 
-        
         const mensajes = [
             "Flores para el amor de mi vida, mi futura psicóloga favorita:",
             " ",
@@ -265,31 +174,6 @@
             "Atte: el amor de tu vida, Joshua Gamboa"
         ];
 
-        // *** AQUÍ AGREGAS TUS FOTOS Y RECUERDOS ***
-        // Puedes copiar y pegar líneas para agregar tantos como quieras.
-        const recuerdos = [
-            { 
-                foto: "foto1.jpg", 
-                texto: "26 de Noviembre de 2024. El día que comenzó esta hermosa historia juntos. ❤️" 
-            },
-            { 
-                foto: "foto2.jpg", 
-                texto: "Nuestras pláticas interminables y las tardes donde el tiempo se nos pasa volando." 
-            },
-            { 
-                foto: "foto3.jpg", 
-                texto: "Viéndote esforzarte cada día en tus estudios. Estoy muy orgulloso de ti." 
-            },
-            { 
-                foto: "foto4.jpg", 
-                texto: "Por todos los recuerdos que ya tenemos, y por todos los que nos faltan por crear. Te amo." 
-            }
-        ];
-
-
-        // ==========================================
-        // --- 2. LÓGICA DEL LIENZO (CANVAS) ---
-        // ==========================================
         const canvas = document.getElementById('treeCanvas');
         const ctx = canvas.getContext('2d');
         const esCelular = window.innerWidth < 600;
@@ -339,10 +223,7 @@
             const largoTronco = esCelular ? 70 : 95;
             const grosorTronco = esCelular ? 9 : 12;
 
-            setTimeout(() => {
-                dibujarRama(canvas.width / 2, canvas.height - 10, largoTronco, 0, grosorTronco);
-            }, 500);
-
+            setTimeout(() => { dibujarRama(canvas.width / 2, canvas.height - 10, largoTronco, 0, grosorTronco); }, 500);
             setTimeout(escribirTexto, 3500); 
         }
 
@@ -416,18 +297,11 @@
                 dibujarRama(endX, endY, len * 0.75, angle + 25, branchWidth * 0.65);
                 dibujarRama(endX, endY, len * 0.75, angle - 25, branchWidth * 0.65);
                 
-                if (Math.random() > 0.15) { 
-                    dibujarRama(endX, endY, len * 0.65, angle + (Math.random() - 0.5) * 15, branchWidth * 0.60);
-                }
-                if (Math.random() > 0.6) { 
-                    dibujarRama(endX, endY, len * 0.45, angle + (Math.random() - 0.5) * 20, branchWidth * 0.50);
-                }
+                if (Math.random() > 0.15) { dibujarRama(endX, endY, len * 0.65, angle + (Math.random() - 0.5) * 15, branchWidth * 0.60); }
+                if (Math.random() > 0.6) { dibujarRama(endX, endY, len * 0.45, angle + (Math.random() - 0.5) * 20, branchWidth * 0.50); }
             }, 130);
         }
 
-        // ==========================================
-        // --- 3. TEXTO, CRONÓMETRO Y TRANSICIÓN ---
-        // ==========================================
         function actualizarTemporizador() {
             const ahora = new Date();
             const diferencia = ahora - fechaInicio;
@@ -459,13 +333,19 @@
                 const lineaElemento = document.getElementById('linea-' + lineaActual);
                 lineaElemento.innerHTML += mensajes[lineaActual].charAt(caracterActual);
                 caracterActual++;
+                
                 if (caracterActual >= mensajes[lineaActual].length) {
                     caracterActual = 0; lineaActual++;
                     
-                    // --- MOSTRAR BOTÓN DEL ÁLBUM AL FINALIZAR TEXTO ---
+                    // MOSTRAR BOTÓN Y REDIRECCIONAR
                     if (lineaActual === mensajes.length) {
                         setTimeout(() => {
-                            document.getElementById('btn-abrir-album').style.display = 'block';
+                            const btn = document.getElementById('btn-abrir-album');
+                            btn.style.display = 'block';
+                            btn.addEventListener('click', () => {
+                                // AQUÍ REDIRECCIONA AL ÁLBUM
+                                window.location.href = "album.html"; 
+                            });
                         }, 1000);
                     } else {
                         setTimeout(escribirTexto, 500); 
@@ -475,55 +355,6 @@
                 }
             }
         }
-
-        // ==========================================
-        // --- 4. LÓGICA DEL ÁLBUM INTERACTIVO ---
-        // ==========================================
-        let indiceActual = 0;
-        const albumContainer = document.getElementById('album-container');
-        const albumImg = document.getElementById('album-img');
-        const albumText = document.getElementById('album-text');
-        const btnPrev = document.getElementById('btn-prev');
-        const btnNext = document.getElementById('btn-next');
-
-        // Función para cargar la información de la tarjeta actual
-        function actualizarAlbum() {
-            albumImg.src = recuerdos[indiceActual].foto;
-            albumText.innerText = recuerdos[indiceActual].texto;
-            
-            // Apagar o prender botones si llegamos al inicio o final
-            btnPrev.disabled = (indiceActual === 0);
-            btnNext.disabled = (indiceActual === recuerdos.length - 1);
-        }
-
-        // Transición de la portada al álbum
-        document.getElementById('btn-abrir-album').addEventListener('click', () => {
-            mainContent.style.opacity = '0';
-            setTimeout(() => {
-                mainContent.style.display = 'none';
-                albumContainer.style.display = 'flex';
-                actualizarAlbum(); // Carga la primera foto
-                setTimeout(() => {
-                    albumContainer.style.opacity = '1';
-                }, 100);
-            }, 1000);
-        });
-
-        // Controles de siguiente/anterior
-        btnPrev.addEventListener('click', () => {
-            if (indiceActual > 0) {
-                indiceActual--;
-                actualizarAlbum();
-            }
-        });
-
-        btnNext.addEventListener('click', () => {
-            if (indiceActual < recuerdos.length - 1) {
-                indiceActual++;
-                actualizarAlbum();
-            }
-        });
-
     </script>
 </body>
 </html>
