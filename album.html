@@ -14,7 +14,6 @@
             overflow-x: hidden;
         }
 
-        /* Título inicial */
         .intro-screen {
             height: 100vh;
             display: flex;
@@ -44,7 +43,6 @@
             60% { transform: translateY(-7px); }
         }
 
-        /* Secciones de la historia */
         .story-section {
             min-height: 100vh;
             display: flex;
@@ -52,24 +50,23 @@
             justify-content: center;
             align-items: center;
             padding: 40px 20px;
-            opacity: 0; /* Oculto por defecto, se muestra al hacer scroll */
+            opacity: 0; 
             transform: translateY(50px);
             transition: opacity 1.2s ease-out, transform 1.2s ease-out;
         }
 
-        /* Clase que se agrega con JS cuando la sección es visible */
         .story-section.visible {
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* Contenedor de las fotos con efecto cinematográfico */
+        /* Contenedor de Imágenes */
         .image-container {
             width: 100%;
             max-width: 500px;
-            height: 65vh; /* Alto dinámico */
+            height: 65vh; 
             border-radius: 15px;
-            overflow: hidden; /* Oculta lo que se sale al hacer zoom */
+            overflow: hidden; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             margin-bottom: 30px;
             position: relative;
@@ -79,12 +76,11 @@
         .image-container img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Llena el contenedor sin deformar */
+            object-fit: cover; 
             transform: scale(1);
             transition: transform 10s ease-out;
         }
 
-        /* El efecto Ken Burns se activa cuando la sección es visible */
         .story-section.visible .image-container img {
             animation: kenBurns 15s alternate infinite ease-in-out;
         }
@@ -94,7 +90,23 @@
             100% { transform: scale(1.15) translate(-2%, 2%); }
         }
 
-        /* Textos de la historia */
+        /* Contenedor de Videos */
+        .video-container {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+            background-color: #000;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
         .story-text {
             max-width: 600px;
             font-size: 1.15rem;
@@ -104,6 +116,46 @@
             padding: 20px;
             border-radius: 10px;
         }
+
+        /* Botones de Spotify */
+        .spotify-controls {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .spotify-btn {
+            background-color: #d2a679;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 1rem;
+            transition: background-color 0.2s, transform 0.1s;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .spotify-btn:hover {
+            background-color: #b08a68;
+            transform: scale(1.02);
+        }
+
+        .spotify-btn-red {
+            background-color: #e0acac; 
+            color: white;
+        }
+        .spotify-btn-red:hover { background-color: #cd8f8f; }
 
         .btn-volver {
             margin: 60px auto;
@@ -131,50 +183,99 @@
     </div>
 
     <div class="story-section">
+        <div class="image-container">
+            <img src="foto_parque.jpg" alt="Platicando en el parque">
+        </div>
         <div class="story-text">
-            Todo empezó en septiembre. Estábamos en la universidad, estudiando psicología. <br><br>
-            Yo no iba con la intención de encontrar a nadie, pero ahí estabas tú, siendo precisamente tú. En el momento en que te vi, me cautivó tu forma de ser: tan graciosa, tan real, diciendo siempre las cosas sin complicaciones. <br><br>
-            Me encantabas, pero decidí dejarlo a la suerte. No te hablé, por más que quisiera...
+            Todo empezó en septiembre. Estábamos en la universidad, estudiando psicología. Yo no iba con la intención de encontrar a nadie, pero ahí estabas tú, siendo precisamente tú. En el momento en que te vi, me cautivó tu forma de ser: tan graciosa, tan real, diciendo siempre las cosas sin complicaciones. <br><br>
+            Decidí dejarlo a la suerte. No te hablé, por más que quisiera. Pero llegó el día en que nuestra maestra favorita, Flor, nos juntó en equipo para una actividad. Me tocó ser líder, y fue la excusa perfecta que usé para conseguir tu número de teléfono.
         </div>
     </div>
 
     <div class="story-section">
         <div class="story-text">
-            Entonces llegó ese día. Nuestra maestra favorita, Flor, nos juntó en equipo para una actividad de lectura.<br><br>
-            Recuerdo que me tocó ser el líder, organizando a todos porque estaban muy callados y penosos. Pero la verdad... ser el líder fue solo la excusa perfecta que usé para poder conseguir tu número de teléfono.
+            Pasaron los días y empezamos a hablar más. Cuando me dijiste que vivías en El Palmar me emocioné muchísimo; estábamos tan cerca que se sentía como un movimiento del destino.<br><br>
+            Esta foto en el parque es del 29 de octubre de 2024, antes de ser novios. Sentados ahí platicando, sentí una conexión tan grande contigo que hasta el día de hoy me tiene enamorado.
+        </div>
+    </div>
+
+    <div class="story-section">
+        <div class="story-text">
+            Conforme fue pasando el tiempo seguimos saliendo, hablando y poco a poco estar mas unidos. Eso me motivó a declararme y confesarte que me gustabas.<br><br>
+            Tenía hasta dos canciones preparadas en Spotify listas para cualquier situación que hubiese sucedido... 🎶
+        </div>
+        
+        <div class="spotify-controls">
+            <a href="AQUÍ_PONES_EL_LINK_DE_SPOTIFY_DEL_PLAN_A" target="_blank" class="spotify-btn">La canción de éxito (Plan A)</a>
+            <a href="AQUÍ_PONES_EL_LINK_DE_SPOTIFY_DEL_PLAN_B" target="_blank" class="spotify-btn spotify-btn-red">La canción de fallar (Plan B)</a>
+        </div>
+    </div>
+
+    <div class="story-section">
+        <div class="story-text">
+            Recuerdo que habiamos ido al mercado a pasar el rato y fuimos al parque. Te dije lo que genuinamente sentía por ti, sin esperar nada a cambio...<br><br>
+            Después de eso... ¡Me sacaste el dedo medio! 🖕🏼 Jajaja.<br><br>
+            Pero me confesaste que yo también te gustaba y querías conocerme más. Fue un inicio perfecto, fiel a tu esencia.
+        </div>
+    </div>
+
+    <div class="story-section">
+        <div class="story-text">
+            Hubo una salida que fortaleció mucho nuestro vínculo. Fuimos por una michelada al Venado 🍺 y nos las tomamos en el parque cerca de tu casa.<br><br>
+            Ese día reímos mucho, platicamos profundo... Hubo ese momento donde me pediste que cerrara los ojos, y a tus ojos yo abri mis piernas tumbándome en la banca. La conexión fue increíble, parece como si hubiese sido ayer.
         </div>
     </div>
 
     <div class="story-section">
         <div class="image-container">
-            <img src="foto_parque.jpg" alt="Platicando en el parque">
+            <img src="foto_carrera.jpg" alt="En la carrera de mi hermana">
         </div>
         <div class="story-text">
-            Pasaron los días y empezamos a hablar más. Cuando me dijiste que vivías en El Palmar me emocioné muchísimo; estábamos tan cerca que se sentía como un movimiento del destino.<br><br>
-            Comenzamos a salir a platicar al parque cerca de tu casa. Esta foto es del 29 de octubre de 2024, antes de ser novios.
+            Antes de nuestro día especial, me acompañaste a una carrera organizada por la preparatoria de mi hermana. No solo fue divertido correr juntos y organizarnos para llegar luego a la uni, sino que ese día conociste más a mi familia y le caíste de maravilla a mi hermana.<br><br>
+            Lo gracioso fue después... tras bajar peso en la carrera, se nos hizo tarde pero pasamos por unos taquitos para volver a subirlo. 🌮 Jajaja.
+        </div>
+    </div>
+
+    <div class="story-section">
+        <div class="image-container">
+            <img src="foto_sendero.jpg" alt="En Sendero Santa Catarina">
+        </div>
+        <div class="story-text">
+            Y entonces llegó el 26 de noviembre. Fuimos a Sendero Santa Catarina.<br><br>
+            Yo no tenía planeado pedirte que fueras mi novia ese día. Faltaba tiempo para la quincena, no tenía mucho dinero y yo quería hacerte algo súper especial para que nunca lo olvidaras. Pero me diste una cachetada con guante blanco.
         </div>
     </div>
 
     <div class="story-section">
         <div class="story-text">
-            Me gusta mucho esa foto porque captura tu esencia al natural, es algo que siempre logro hacer cuando te tomo fotos.<br><br>
-            Ese día, sentados ahí platicando, sentí una conexión tan grande contigo... una conexión que hasta el día de hoy me tiene perdidamente enamorado de ti.
+            Me recordaste que tú no estabas conmigo por bienes materiales ni económicos, sino que genuinamente me amabas. Que aún fuera con poco o con mucho, íbamos juntos en el camino.<br><br>
+            Comimos comida china, platicamos de todo, y fue en ese momento que lo supe con total certeza.
         </div>
     </div>
 
-    <button class="btn-volver" onclick="window.location.href='index.html'">Volver al inicio</button>
+    <div class="story-section">
+        <div class="video-container">
+            <video controls>
+                <source src="video_novios.mp4" type="video/mp4">
+                Tu navegador no soporta la etiqueta de video.
+            </video>
+        </div>
+        <div class="story-text">
+            Fue ahí mismo, dentro de Sendero, donde por fin te pedí ser mi novia.<br><br>
+            Incluso viendo este video nuevamente, noto tu emoción cuando te abracé y te di ese beso. Fue el inicio oficial de esta aventura, y la mejor decisión de mi vida. ❤️
+        </div>
+    </div>
+
+    <button class="btn-volver" onclick="window.location.href='index.html'">Volver al inicio del árbol 🌻</button>
 
     <script>
-        // Esta función de JavaScript detecta cuando vas haciendo scroll
-        // y hace aparecer los textos y fotos suavemente (Intersection Observer)
-        
         document.addEventListener("DOMContentLoaded", function() {
             const sections = document.querySelectorAll('.story-section');
 
             const observerOptions = {
                 root: null,
                 rootMargin: '0px',
-                threshold: 0.3 // La animación empieza cuando el 30% de la sección es visible
+                threshold: 0.3 
             };
 
             const observer = new IntersectionObserver((entries, observer) => {
