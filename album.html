@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestro Álbum ❤️</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #fdfaf3; 
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        #album-container {
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .album-card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Estilos para foto o video */
+        .media-content {
+            width: 100%;
+            max-height: 60vh;
+            object-fit: contain;
+            border-radius: 8px;
+            background-color: #f0f0f0;
+            display: none; /* Se oculta por defecto hasta saber qué es */
+        }
+
+        .album-text {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            color: #444;
+            line-height: 1.4;
+            min-height: 60px;
+        }
+
+        .album-controls {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 20px;
+        }
+
+        .btn-nav {
+            padding: 10px 15px;
+            background-color: #d2a679;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex: 1;
+            margin: 0 5px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-nav:hover { background-color: #b08a68; }
+        
+        .btn-nav:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-volver {
+            margin-top: 30px;
+            background: none;
+            border: none;
+            color: #b08a68;
+            text-decoration: underline;
+            font-family: inherit;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .album-card { padding: 10px; }
+            .album-text { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="album-container">
+        <div class="album-card">
+            <img id="album-img" class="media-content" src="" alt="Recuerdo">
+            <video id="album-video" class="media-content" controls></video>
+            
+            <div id="album-text" class="album-text"></div>
+        </div>
+        
+        <div class="album-controls">
+            <button class="btn-nav" id="btn-prev">⬅️ Anterior</button>
+            <button class="btn-nav" id="btn-next">Siguiente ➡️</button>
+        </div>
+
+        <button class="btn-volver" onclick="window.location.href='index.html'">Volver al inicio</button>
+    </div>
+
+    <script>
+        // ==========================================
+        // --- CONFIGURACIÓN DE TUS FOTOS Y VIDEOS ---
+        // ==========================================
+        // Si es foto, pon: tipo: 'foto'
+        // Si es video, pon: tipo: 'video'
+        
+        const recuerdos = [
+            { 
+                tipo: 'foto',
+                src: "foto1.jpg", 
+                texto: "26 de Noviembre de 2024. El día que comenzó esta hermosa historia juntos. ❤️" 
+            },
+            { 
+                tipo: 'foto',
+                src: "foto2.jpg", 
+                texto: "Nuestras pláticas interminables y las tardes donde el tiempo se nos pasa volando." 
+            },
+            { 
+                tipo: 'video',
+                src: "video1.mp4", 
+                texto: "Amo tu sonrisa en este video. (Recuerda mantener los videos cortos para que carguen rápido)." 
+            },
+            { 
+                tipo: 'foto',
+                src: "foto3.jpg", 
+                texto: "Por todos los recuerdos que ya tenemos, y por todos los que nos faltan por crear. Te amo." 
+            }
+        ];
+
+        // ==========================================
+        // --- LÓGICA DEL ÁLBUM ---
+        // ==========================================
+        let indiceActual = 0;
+        const albumImg = document.getElementById('album-img');
+        const albumVideo = document.getElementById('album-video');
+        const albumText = document.getElementById('album-text');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        function actualizarAlbum() {
+            const recuerdoActual = recuerdos[indiceActual];
+            
+            // Pausar el video anterior si estaba reproduciéndose
+            albumVideo.pause();
+
+            if (recuerdoActual.tipo === 'foto') {
+                albumVideo.style.display = 'none';
+                albumImg.src = recuerdoActual.src;
+                albumImg.style.display = 'block';
+            } else if (recuerdoActual.tipo === 'video') {
+                albumImg.style.display = 'none';
+                albumVideo.src = recuerdoActual.src;
+                albumVideo.style.display = 'block';
+            }
+
+            albumText.innerText = recuerdoActual.texto;
+            
+            btnPrev.disabled = (indiceActual === 0);
+            btnNext.disabled = (indiceActual === recuerdos.length - 1);
+        }
+
+        btnPrev.addEventListener('click', () => {
+            if (indiceActual > 0) {
+                indiceActual--;
+                actualizarAlbum();
+            }
+        });
+
+        btnNext.addEventListener('click', () => {
+            if (indiceActual < recuerdos.length - 1) {
+                indiceActual++;
+                actualizarAlbum();
+            }
+        });
+
+        // Cargar el primer recuerdo al abrir la página
+        actualizarAlbum();
+
+    </script>
+</body>
+</html>
