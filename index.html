@@ -128,6 +128,19 @@
             transform: translateY(-2px);
         }
 
+        #btn-saltar-intro {
+            display: none;
+            margin: 10px auto 0 auto;
+            padding: 6px 16px;
+            background-color: transparent;
+            color: #b08a68;
+            border: 1px solid #b08a68;
+            border-radius: 20px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -157,6 +170,7 @@
             <div style="font-size: 0.8rem; font-weight: normal; margin-bottom: 4px; color: #777;">Mi amor por ti comenzó hace...</div>
             <span id="timer">Calculando tiempo juntos...</span>
             <button id="btn-abrir-album">Abrir nuestro álbum 📖</button>
+            <button id="btn-saltar-intro">Saltar intro →</button>
         </div>
     </div>
 
@@ -190,35 +204,50 @@
         const startText = document.getElementById('start-text');
         const loadingText = document.getElementById('loading-text');
         const mainContent = document.getElementById('main-content');
+        const btnSaltar = document.getElementById('btn-saltar-intro');
+
+        let inicioMostrado = false;
+        function mostrarInicio() {
+            if (inicioMostrado) return;
+            inicioMostrado = true;
+            loadingText.style.display = 'none';
+            startBtn.style.display = 'block';
+            startText.style.display = 'block';
+
+            startBtn.addEventListener('click', () => {
+                startScreen.style.opacity = '0';
+                setTimeout(() => {
+                    startScreen.style.display = 'none';
+                    mainContent.style.display = 'flex';
+                    setTimeout(() => {
+                        mainContent.style.opacity = '1';
+                        startSequence();
+                    }, 100);
+                }, 500);
+            });
+        }
 
         function iniciarCuandoTodoCargue() {
             imagenesCargadas++;
-            if (imagenesCargadas === totalImagenes) {
-                loadingText.style.display = 'none';
-                startBtn.style.display = 'block';
-                startText.style.display = 'block';
-
-                startBtn.addEventListener('click', () => {
-                    startScreen.style.opacity = '0';
-                    setTimeout(() => {
-                        startScreen.style.display = 'none';
-                        mainContent.style.display = 'flex';
-                        setTimeout(() => {
-                            mainContent.style.opacity = '1';
-                            startSequence();
-                        }, 100);
-                    }, 500);
-                });
-            }
+            if (imagenesCargadas === totalImagenes) mostrarInicio();
         }
 
         imgGirasol.onload = iniciarCuandoTodoCargue;
         imgTulipan.onload = iniciarCuandoTodoCargue;
+        imgGirasol.onerror = iniciarCuandoTodoCargue;
+        imgTulipan.onerror = iniciarCuandoTodoCargue;
+        setTimeout(mostrarInicio, 5000);
 
         function startSequence() {
             dibujarCesped(); 
             actualizarTemporizador(); 
             setInterval(actualizarTemporizador, 1000);
+
+            // La intro ya la leyó antes: permitir saltarla e ir directo al álbum
+            btnSaltar.style.display = 'block';
+            btnSaltar.addEventListener('click', () => {
+                window.location.href = "album.html";
+            });
             
             const largoTronco = esCelular ? 70 : 95;
             const grosorTronco = esCelular ? 9 : 12;
@@ -340,6 +369,7 @@
                     // MOSTRAR BOTÓN Y REDIRECCIONAR
                     if (lineaActual === mensajes.length) {
                         setTimeout(() => {
+                            btnSaltar.style.display = 'none';
                             const btn = document.getElementById('btn-abrir-album');
                             btn.style.display = 'block';
                             btn.addEventListener('click', () => {
